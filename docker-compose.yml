@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    hostname: postgres
+    ports:
+      - 5433:5432
+    container_name: postgres-cont
+    env_file:
+      - .env      
+    restart: always
+
+  redis:
+    image: redis
+    container_name: redis-cont
+    ports:
+      - 6378:6379
+    expose:
+      - 6379
+
+  backend_app:
+    build: .
+    ports:
+      - 3001:3000
+    container_name: backend-cont
+    env_file:
+      - .env  
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    links:
+      - postgres
+      - redis
+    command: sh -c "/wait && yarn prisma generate && yarn prisma migrate reset -f && yarn start"
