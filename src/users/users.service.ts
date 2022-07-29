@@ -10,9 +10,11 @@ export class UsersService {
     private readonly redisService: RedisService,
   ) {}
 
-  async findAllUsers(): Promise<Users[]> {
+  async findAllUsers(): Promise<Omit<Users, 'password'>[]> {
     try {
-      const users = await this.userRepository.getAll();
+      const users = (await this.userRepository.getAll()).map(
+        ({ password, ...user }) => user,
+      );
 
       return users;
     } catch (error) {
@@ -20,14 +22,16 @@ export class UsersService {
     }
   }
 
-  async findAllUsersOnRedis(): Promise<Users[]> {
+  async findAllUsersOnRedis(): Promise<Omit<Users, 'password'>[]> {
     try {
       const getUsersKeyOnRedis = await this.redisService.getKeyOnRedis(
         'allUsers',
       );
 
       if (!getUsersKeyOnRedis) {
-        const users = await this.userRepository.getAll();
+        const users = (await this.userRepository.getAll()).map(
+          ({ password, ...user }) => user,
+        );
         const stringifyUsersData = this.redisService.stringifyData(users);
 
         this.redisService.setKeyOnRedis('allUsers', stringifyUsersData, 200);
@@ -44,9 +48,11 @@ export class UsersService {
     }
   }
 
-  async findOneUser(id: string) {
+  async findOneUser(id: string): Promise<Omit<Users, 'password'>> {
     try {
-      return this.userRepository.getOne(id);
+      const { password, ...user } = await this.userRepository.getOne(id);
+
+      return user;
     } catch (error) {
       throw new InternalServerErrorException();
     }

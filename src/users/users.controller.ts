@@ -7,17 +7,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/redis')
-  findAllUsersOnRedis(): Promise<Users[]> {
+  findAllUsersOnRedis(): Promise<Omit<Users, 'password'>[]> {
     return this.usersService.findAllUsersOnRedis();
   }
 
   @Get('/')
-  findAllUsers(): Promise<Users[]> {
+  findAllUsers(): Promise<Omit<Users, 'password'>[]> {
     return this.usersService.findAllUsers();
   }
 
   @Get(':id')
-  findOneUser(@Param('id') id: string): Promise<Users> {
+  findOneUser(@Param('id') id: string): Promise<Omit<Users, 'password'>> {
     return this.usersService.findOneUser(id);
   }
 }
