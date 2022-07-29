@@ -4,6 +4,7 @@ export class RedisService {
   private redisCient = new Redis({
     port: Number(process.env.REDIS_PORT),
     host: process.env.REDIS_HOST,
+    password: process.env.REDIS_PASSWORD,
   });
 
   async getKeyOnRedis(key: string): Promise<string> {
