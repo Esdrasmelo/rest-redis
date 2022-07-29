@@ -4,7 +4,9 @@ import { Users } from '@prisma/client';
 export const usersSeeds = async (): Promise<Users[]> => {
   const users: Users[] = [];
 
-  for (let index = 0; Number(process.env.SEED_NUMBER); index++) {
+  for (let index = 0; index <= Number(process.env.SEED_NUMBER); index++) {
+    console.log(index);
+
     users.push({
       id: faker.datatype.uuid(),
       name: faker.name.findName(),
