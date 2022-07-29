@@ -5,12 +5,12 @@ services:
     image: postgres
     hostname: postgres
     ports:
-      - 5433:5432
+      - 5432:5432
     container_name: postgres-cont
     env_file:
       - .env      
     restart: always
-
+  
   redis:
     image: redis
     container_name: redis-cont
